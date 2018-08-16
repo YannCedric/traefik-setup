@@ -1,0 +1,48 @@
+# traefik.toml
+[traefikLog]
+  filePath = "traefik.log"
+[accessLog]
+  filePath = "traefik_access.log"
+
+logLevel = "INFO"
+defaultEntryPoints = ["http"]
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+
+[web]
+address = ":8080"
+
+[api]
+
+[docker]
+domain = "docker.local"
+watch = true
+
+[file]
+filename = "/etc/traefik/traefik.toml"
+watch = true
+
+# rules
+[backends]
+  [backends.backend1]
+    [backends.backend1.servers.server1]
+    url = "http://api1:4000"
+    [backends.backend1.servers.server2]
+    url = "http://api1-1:4000"
+  [backends.backend1.healthcheck]
+    path = "/"
+    interval = "5s"
+  [backends.backend2]
+    [backends.backend2.servers.server1]
+    url = "http://api2:4000"
+  
+[frontends]
+  [frontends.frontend1]
+  backend = "backend1"
+    [frontends.frontend1.routes.test_1]
+    rule = "Host:test.3"
+  [frontends.frontend2]
+  backend = "backend2"
+    [frontends.frontend2.routes.test_1]
+    rule = "Host:test.2"
